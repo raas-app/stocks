@@ -1,0 +1,17 @@
+server:
+  port: 8080
+  debugPort: 8080
+  production: false
+  handlerTimeout: 15s
+
+market:
+  psx:
+    baseurl: https://dps.psx.com.pk
+    scraperurl:
+      indices: /indices
+      company: /company
+      reports: /company/reports
+      symbols: /symbols
+    timeseriesurl:
+      eod: /timeseries/eod/
+      intraday: /timeseries/int/

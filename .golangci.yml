@@ -1,0 +1,212 @@
+# This file contains all available configuration options
+# with their default values.
+
+# options for analysis running
+run:
+  # timeout for analysis, e.g. 30s, 5m, default is 1m
+  timeout: 5m
+
+  # include test files or not, default is true
+  tests: false
+
+  # which dirs to skip: issues from them won't be reported;
+  # can use regexp here: generated.*, regexp is applied on full path;
+  # default value is empty list, but default dirs are skipped independently
+  # from this option's value (see skip-dirs-use-default).
+  # "/" will be replaced by current OS file path separator to properly work
+  # on Windows.
+  skip-dirs:
+    - gen
+    - scripts/cargo_migrator
+
+# output configuration options
+output:
+  # sorts results by: filepath, line and column
+  sort-results: true
+
+# all available settings of specific linters
+linters-settings:
+  cyclop:
+    # the maximal code complexity to report
+    max-complexity: 10
+    # the maximal average package complexity. If it's higher than 0.0 (float) the check is enabled (default 0.0)
+    package-average: 0.0
+    # should ignore tests (default false)
+    skip-tests: true
+
+  dupl:
+    # Tokens count to trigger issue.
+    threshold: 250
+  gocyclo:
+    # minimal code complexity to report, 30 by default (but we recommend 10-20)
+    min-complexity: 10
+
+  golint:
+    # minimal confidence for issues, default is 0.8
+    min-confidence: 0.8
+
+  lll:
+    # max line length, lines longer will be reported. Default is 120.
+    # '\t' is counted as 1 character by default, and can be changed with the tab-width option
+    line-length: 100
+    # tab width in spaces. Default to 1.
+    tab-width: 1
+
+  revive:
+    # see https://github.com/mgechev/revive#available-rules for details.
+    rules:
+      - name: context-keys-type
+      #      - name: time-equal
+      - name: time-naming
+      - name: var-declaration
+      - name: unexported-return
+        disabled: true
+      - name: errorf
+      - name: blank-imports
+      - name: context-as-argument
+      - name: dot-imports
+      - name: error-return
+      - name: error-strings
+      - name: error-naming
+      - name: exported
+      - name: if-return
+      - name: increment-decrement
+      # TODO: разобраться с  don't use an underscore in package name
+      - name: var-naming
+      - name: package-comments
+      - name: range
+      - name: receiver-naming
+      - name: indent-error-flow
+        disabled: true
+      - name: argument-limit
+        arguments:
+          - 10
+      - name: cyclomatic
+        disabled: true
+      - name: max-public-structs
+        disabled: true
+      - name: file-header
+        disabled: true
+      - name: empty-block
+      - name: superfluous-else
+      - name: confusing-naming
+      - name: get-return
+        disabled: true
+      - name: modifies-parameter
+      - name: confusing-results
+      - name: deep-exit
+      - name: unused-parameter
+      - name: unreachable-code
+      - name: add-constant
+        disabled: true
+        arguments:
+          - maxLitCount: "3"
+            allowStrs: '"", ",","statement","user_id","text","inDriver","is_tracked","type","title","url","city_id"'
+            allowInts: "-1,0,1,2,10,64,100,180"
+            allowFloats: "0.0,0.01,0.05,0.005,0.025"
+      - name: flag-parameter
+        disabled: true
+      - name: unnecessary-stmt
+        disabled: true
+      - name: struct-tag
+      - name: modifies-value-receiver
+      - name: constant-logical-expr
+      - name: bool-literal-in-expr
+      - name: redefines-builtin-id
+      - name: function-result-limit
+        arguments:
+          - 4
+      - name: imports-blacklist
+      - name: range-val-in-closure
+      - name: range-val-address
+      - name: waitgroup-by-value
+      - name: atomic
+      - name: empty-lines
+      - name: line-length-limit
+        arguments:
+          - 180
+      - name: call-to-gc
+      - name: duplicated-imports
+      - name: import-shadowing
+      - name: bare-return
+      - name: unused-receiver
+      - name: unhandled-error
+        arguments:
+          - "fmt.Printf"
+      - name: cognitive-complexity
+        disabled: true
+      - name: string-of-int
+      - name: string-format
+      - name: early-return
+      - name: unconditional-recursion
+      - name: identical-branches
+      - name: defer
+      - name: unexported-naming
+      - name: function-length
+        arguments:
+          - 80
+          - 0
+      - name: nested-structs
+        disabled: true
+      - name: useless-break
+        disabled: true
+  #      - name: banned-characters
+  #      - name: optimize-operands-order
+
+  stylecheck:
+    # Select the Go version to target. The default is '1.13'.
+    go: "1.18"
+
+  # Default value is empty list.
+  # When a list of severity rules are provided, severity information will be added to lint
+  # issues. Severity rules have the same filtering capability as exclude rules except you
+  # are allowed to specify one matcher per severity rule.
+  # Only affects out formats that support setting severity information.
+  rules:
+    - linters:
+        - dupl
+      severity: info
+linters:
+  fast: true
+  enable:
+    - asciicheck
+    - bodyclose
+    #    - cyclop
+    #    golangci версии v1.53.0 и выше начал ругаться на depguard, нужно понять как его настроить и надо ли
+    #    - depguard
+    - dogsled
+    - dupl
+    - durationcheck
+    - errcheck
+    - errname
+    - errorlint
+    #    - exhaustive
+    - exportloopref
+    #    - forbidigo
+    #    - forcetypeassert
+    #    - funlen
+    #    - gosec
+    - govet
+    - makezero
+    - nilerr
+    - noctx
+    - rowserrcheck
+    - sqlclosecheck
+    - staticcheck
+    - typecheck
+    # comment checks
+    #    - godot
+    #    - godox
+    - misspell
+    # complexity check
+    #    - cyclop
+    #    - gocognit
+    #    - gocyclo
+    #    - nestif
+    - goimports
+    - gofmt
+    - gocritic
+    - revive
+    - prealloc
+    - unused
+#    - wrapcheck
