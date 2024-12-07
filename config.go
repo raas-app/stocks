@@ -1,4 +1,4 @@
-package config
+package raas
 
 import (
 	"time"
@@ -44,10 +44,11 @@ type AppName string
 
 // Load reads and parses the configuration file, returning a Config instance.
 func Load() (*Config, error) {
-	viper.SetConfigName("config")  // Name of the config file (without extension)
-	viper.SetConfigType("yaml")    // File format (yaml, json, etc.)
-	viper.AddConfigPath("config/") // Look for the config file in the `config` directory
-	viper.AutomaticEnv()           // Override config with environment variables if they exist
+	viper.SetConfigName("config") // Name of the config file (without extension)
+	viper.SetConfigType("yaml")   // File format (yaml, json, etc.)
+	// For Debug mode "../config/", otherwise "config/"
+	viper.AddConfigPath("../config/") // Look for the config file in the `config` directory
+	viper.AutomaticEnv()              // Override config with environment variables if they exist
 
 	if err := viper.ReadInConfig(); err != nil {
 		return nil, err
