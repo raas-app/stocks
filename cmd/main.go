@@ -5,7 +5,9 @@ import (
 	"os"
 	"time"
 
-	config "github.com/raas-app/stocks"
+	raas "github.com/raas-app/stocks"
+	"github.com/raas-app/stocks/internal/scrapper"
+	"github.com/raas-app/stocks/internal/scrapper/scrapperfx"
 	"github.com/raas-app/stocks/pkg/zapper"
 	"go.uber.org/fx"
 	"go.uber.org/fx/fxevent"
@@ -36,20 +38,20 @@ func getStopTimeout() time.Duration {
 	return defaultStopTimeout
 }
 
-func envName() config.EnvName {
+func envName() raas.EnvName {
 	name := os.Getenv("ENV_NAME")
 	if name == "" {
 		name = "undefined"
 	}
-	return config.EnvName(name)
+	return raas.EnvName(name)
 }
 
-func appName() config.AppName {
+func appName() raas.AppName {
 	name := os.Getenv("APP_NAME")
 	if name == "" {
 		name = "raas-stocks"
 	}
-	return config.AppName(name)
+	return raas.AppName(name)
 }
 
 func newLogger(level string, debug, console bool) (*zap.Logger, error) {
@@ -91,7 +93,7 @@ func newLogger(level string, debug, console bool) (*zap.Logger, error) {
 	return logger, err
 }
 
-func appLogger(cfg *config.Config, lc fx.Lifecycle) (*zap.Logger, error) {
+func appLogger(cfg *raas.Config, lc fx.Lifecycle) (*zap.Logger, error) {
 	console := os.Getenv("ORDER_LOGGER") == "console"
 	logger, err := newLogger("INFO", true, console)
 	if err != nil {
@@ -105,8 +107,8 @@ func appLogger(cfg *config.Config, lc fx.Lifecycle) (*zap.Logger, error) {
 }
 
 var initApp = fx.Module("raas-app",
-	fx.Provide(config.Load, appLogger, envName, appName),
-	fx.Invoke(func(cfg *config.Config, log *zap.Logger) {
+	fx.Provide(raas.Load, appLogger, envName, appName),
+	fx.Invoke(func(cfg *raas.Config, log *zap.Logger) {
 		log.Info("Application is starting", zap.Int("port", cfg.Server.Port))
 		log.Info("Application configuration", zap.Any("config", cfg))
 	}))
@@ -117,7 +119,8 @@ func main() {
 		fx.WithLogger(func(log *zap.Logger) fxevent.Logger {
 			return &fxevent.ZapLogger{Logger: log}
 		}),
-
+		fx.Provide(scrapperfx.ProvideCompanyScrapper),
+		fx.Invoke(scrapper.InitializeCompanyScrapper), // Invoke is just for testing, will move to any endpoint or kafka in future
 		fx.StartTimeout(getStartTimeout()),
 		fx.StopTimeout(getStopTimeout()),
 	).Run()
