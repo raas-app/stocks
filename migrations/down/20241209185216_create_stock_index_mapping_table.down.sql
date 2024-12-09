@@ -1,0 +1,1 @@
+DROP TABLE stock_index_mapping;

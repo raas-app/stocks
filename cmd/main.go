@@ -6,6 +6,9 @@ import (
 	"time"
 
 	raas "github.com/raas-app/stocks"
+	"github.com/raas-app/stocks/internal/database/databasefx"
+	"github.com/raas-app/stocks/internal/fetcher/fetcherfx"
+	"github.com/raas-app/stocks/internal/fetcher/stocks"
 	"github.com/raas-app/stocks/internal/scrapper"
 	"github.com/raas-app/stocks/internal/scrapper/scrapperfx"
 	"github.com/raas-app/stocks/pkg/zapper"
@@ -65,7 +68,6 @@ func newLogger(level string, debug, console bool) (*zap.Logger, error) {
 		},
 	}
 
-	// Add details if in debug mode
 	if debug {
 		options = append(options, zapper.WithDevelopment())
 		if console {
@@ -120,7 +122,11 @@ func main() {
 			return &fxevent.ZapLogger{Logger: log}
 		}),
 		fx.Provide(scrapperfx.ProvideCompanyScrapper),
+		fx.Provide(fetcherfx.ProvideStockFetcher),
 		fx.Invoke(scrapper.InitializeCompanyScrapper), // Invoke is just for testing, will move to any endpoint or kafka in future
+		fx.Invoke(stocks.InitializeStockHandler),
+		fx.Provide(databasefx.ProvideDatabaseConnection),
+		fx.Invoke(databasefx.InvokeDatabaseConnection),
 		fx.StartTimeout(getStartTimeout()),
 		fx.StopTimeout(getStopTimeout()),
 	).Run()
