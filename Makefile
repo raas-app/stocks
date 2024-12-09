@@ -3,7 +3,7 @@ MIGRATE=migrate
 MIGRATION_DIR=migrations
 UP_DIR=$(MIGRATION_DIR)/up
 DOWN_DIR=$(MIGRATION_DIR)/down
-DATABASE_URL=postgres://username:password@localhost:5432/dbname?sslmode=disable
+DATABASE_URL=mysql://root:root@tcp(localhost:3306)/raas_stocks
 
 .PHONY: create
 create: # Create Migration (pass the name of the migration as the argument)

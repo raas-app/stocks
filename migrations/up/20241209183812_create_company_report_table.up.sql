@@ -1,0 +1,10 @@
+CREATE TABLE company_report (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(255) NOT NULL,
+  url VARCHAR(255) NOT NULL,
+  type ENUM('Quaterly', 'Annual', 'BoardMeeting', 'Financial', 'Other') NOT NULL,
+  stock_id BIGINT,
+  FOREIGN KEY (stock_id) REFERENCES stock(id) ON DELETE CASCADE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
