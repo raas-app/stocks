@@ -10,5 +10,6 @@ func ProvideDatabaseConnection(logger *zap.Logger, config *raas.Config) Connecti
 	return NewConnectionBuilder(logger, config)
 }
 
-var Provider = fx.Module("databases",
-	fx.Provide(ProvideDatabaseConnection))
+var Providers = fx.Module("databases",
+	fx.Provide(ProvideDatabaseConnection),
+)

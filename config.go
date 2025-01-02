@@ -69,7 +69,7 @@ func Load() (*Config, error) {
 	if err != nil {
 		fmt.Errorf("Error loading .env file: %w", err)
 	}
-	viper.SetConfigFile("../config/config.yaml")
+	viper.SetConfigFile("config/config.yaml")
 
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 

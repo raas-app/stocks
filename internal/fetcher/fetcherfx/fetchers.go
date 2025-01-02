@@ -7,9 +7,10 @@ import (
 	"go.uber.org/zap"
 )
 
-func ProvideStockFetcher(config *raas.Config, logger *zap.Logger) (fetcher.StockHandler, error) {
+func ProvideStockFetcher(config *raas.Config, logger *zap.Logger) (raas.StockFetcherHandler, error) {
 	return fetcher.NewStockHandler(config, logger), nil
 }
 
 var Providers = fx.Module("fetchers",
-	fx.Provide(ProvideStockFetcher))
+	fx.Provide(ProvideStockFetcher),
+)

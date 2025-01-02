@@ -8,9 +8,9 @@ import (
 	raas "github.com/raas-app/stocks"
 	"github.com/raas-app/stocks/internal/database/databasefx"
 	"github.com/raas-app/stocks/internal/fetcher/fetcherfx"
-	"github.com/raas-app/stocks/internal/fetcher/stocks"
-	"github.com/raas-app/stocks/internal/scrapper"
+	"github.com/raas-app/stocks/internal/resthttp"
 	"github.com/raas-app/stocks/internal/scrapper/scrapperfx"
+	"github.com/raas-app/stocks/internal/usecase/usecasefx"
 	"github.com/raas-app/stocks/pkg/zapper"
 	"go.uber.org/fx"
 	"go.uber.org/fx/fxevent"
@@ -121,12 +121,12 @@ func main() {
 		fx.WithLogger(func(log *zap.Logger) fxevent.Logger {
 			return &fxevent.ZapLogger{Logger: log}
 		}),
-		fx.Provide(scrapperfx.ProvideCompanyScrapper),
-		fx.Provide(fetcherfx.ProvideStockFetcher),
-		fx.Invoke(scrapper.InitializeCompanyScrapper), // Invoke is just for testing, will move to any endpoint or kafka in future
-		fx.Invoke(stocks.InitializeStockHandler),
-		fx.Provide(databasefx.ProvideDatabaseConnection),
-		fx.Invoke(databasefx.InvokeDatabaseConnection),
+		scrapperfx.Providers,
+		fetcherfx.Providers,
+		databasefx.Providers,
+		usecasefx.Providers,
+		resthttp.Providers,
+		resthttp.Launcher,
 		fx.StartTimeout(getStartTimeout()),
 		fx.StopTimeout(getStopTimeout()),
 	).Run()

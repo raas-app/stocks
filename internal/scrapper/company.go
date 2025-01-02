@@ -33,7 +33,6 @@ func InitializeCompanyScrapper(scrapper CompanyScrapper) {
 		return // TODO: handle error
 	}
 
-	return
 }
 
 func (c *companyScrapper) GetCompany(symbol string) (*Company, error) {

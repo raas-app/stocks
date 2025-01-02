@@ -12,4 +12,5 @@ func ProvideCompanyScrapper(cfg *config.Config, logger *zap.Logger) (scrapper.Co
 }
 
 var Providers = fx.Module("scrappers",
-	fx.Provide(ProvideCompanyScrapper))
+	fx.Provide(ProvideCompanyScrapper),
+)

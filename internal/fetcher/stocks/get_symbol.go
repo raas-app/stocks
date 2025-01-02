@@ -1,15 +1,17 @@
 package stocks
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 
+	raas "github.com/raas-app/stocks"
 	"go.uber.org/zap"
 )
 
-func (h *stockHandler) GetSymbols() []Stock {
+func (h *stockHandler) GetSymbols(ctx context.Context) []raas.Stock {
 	// Construct the URL
 	url := fmt.Sprintf("%s%s", h.Config.Market.PSX.BaseURL, h.Config.Market.PSX.ScraperURL.Symbols)
 
@@ -47,7 +49,7 @@ func (h *stockHandler) GetSymbols() []Stock {
 		return nil
 	}
 
-	var symbols []Stock
+	var symbols []raas.Stock
 	if err := json.Unmarshal(body, &symbols); err != nil {
 		h.Logger.Error("Failed to parse JSON response",
 			zap.String("url", url), zap.ByteString("responseBody", body), zap.Error(err))
