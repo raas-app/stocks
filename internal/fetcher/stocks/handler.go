@@ -22,8 +22,3 @@ func NewStockHandler(config *raas.Config, logger *zap.Logger) raas.StockFetcherH
 		Logger: logger,
 	}
 }
-
-func InitializeStockHandler(h raas.StockFetcherHandler) error {
-	h.GetEodPriceAction("EFERT")
-	return nil
-}

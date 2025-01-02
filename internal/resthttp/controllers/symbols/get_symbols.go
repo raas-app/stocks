@@ -11,6 +11,6 @@ import (
 func (s *SymbolsHandler) GetSymbols(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(r.Context(), 10*time.Second)
 	defer cancel()
-	symbols := s.stockFetcherHandler.GetSymbols(ctx)
+	symbols := s.SymbolsUsecase.GetSymbols(ctx)
 	s.responder.Ok(w, symbolsdto.NewGetSymbolsResponse(symbols))
 }

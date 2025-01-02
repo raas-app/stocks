@@ -6,8 +6,9 @@ import (
 	"github.com/go-chi/chi/v5"
 	raas "github.com/raas-app/stocks"
 	"github.com/raas-app/stocks/internal/respond"
+	"github.com/raas-app/stocks/internal/resthttp/controllers"
 	"github.com/raas-app/stocks/internal/resthttp/middlewares"
-	"github.com/raas-app/stocks/internal/resthttp/symbols"
+	stocksusecase "github.com/raas-app/stocks/internal/usecase/stocks"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 )
@@ -17,6 +18,8 @@ type RouterDependencies struct {
 
 	Logger              *zap.Logger
 	StockFetcherHandler raas.StockFetcherHandler
+	SymbolsUsecase      stocksusecase.SymbolsUsecase
+	PriceActionUsecase  stocksusecase.PriceActionUsecase
 }
 
 func MakeRoutes(routerDependencies RouterDependencies) (http.Handler, error) {
@@ -31,11 +34,21 @@ func MakeRoutes(routerDependencies RouterDependencies) (http.Handler, error) {
 	}
 
 	router := chi.NewRouter()
+	controllers := controllers.Controllers()
 
-	symbolsHandler, err := symbols.NewSymbolsHandler(
+	symbolsHandler, err := controllers.SymbolHandler(
 		responder,
 		routerDependencies.Logger,
-		routerDependencies.StockFetcherHandler,
+		routerDependencies.SymbolsUsecase,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	priceActionHandler, err := controllers.PriceActionHandler(
+		responder,
+		routerDependencies.Logger,
+		routerDependencies.PriceActionUsecase,
 	)
 	if err != nil {
 		return nil, err
@@ -44,6 +57,10 @@ func MakeRoutes(routerDependencies RouterDependencies) (http.Handler, error) {
 		router.Use(debugLogger.LogRequest)
 		r.Route("/symbols", func(r chi.Router) {
 			r.Get("/", symbolsHandler.GetSymbols)
+		})
+		r.Route("/price-action", func(r chi.Router) {
+			r.Get("/{symbol}/intraday", priceActionHandler.GetIntraday)
+			r.Get("/{symbol}/eod", priceActionHandler.GetEndOfDay)
 		})
 	})
 	return router, nil
