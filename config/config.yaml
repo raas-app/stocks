@@ -19,8 +19,8 @@ database:
   host: localhost
   port: 3306
   user: root
-  password: root
-  name: raas_stocks
+  password: 
+  name: stocks
   sslmode: disable
   net: tcp
-  timeout: 5s
+  timeout: 10s

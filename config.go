@@ -47,14 +47,18 @@ type TimeseriesURL struct {
 }
 
 type DatabaseConfig struct {
-	Host     string
-	Port     int
-	User     string
-	Password string
-	Name     string
-	SSLMode  string
-	Net      string
-	Timeout  time.Duration
+	Host                   string
+	Port                   int
+	User                   string
+	Password               string
+	Name                   string
+	SSLMode                string
+	Net                    string
+	ConnectionsMaxLifetime time.Duration
+	ConnectionMaxIdleTime  time.Duration
+	MaxOpenConnections     int
+	MaxIdleConnections     int
+	Timeout                time.Duration
 }
 
 type EnvName string
