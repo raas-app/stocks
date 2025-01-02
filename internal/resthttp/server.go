@@ -23,7 +23,7 @@ func ProvideHTTPServer(
 ) (*http.Server, error) {
 	timeoutErrMeta := &dto.Meta{
 		Code:    0,
-		Message: fmt.Sprintf("handler timeout: %d ns", config),
+		Message: fmt.Sprintf("handler timeout: %d ns", config.Server.HandlerTimeout.Nanoseconds()),
 	}
 	timeoutErr := dto.ResponseError{Meta: timeoutErrMeta}
 	timeoutMsg, err := json.Marshal(timeoutErr)
