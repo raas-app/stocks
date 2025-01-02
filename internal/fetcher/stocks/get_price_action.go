@@ -6,12 +6,13 @@ import (
 	"io"
 	"net/http"
 
+	raas "github.com/raas-app/stocks"
 	"go.uber.org/zap"
 )
 
-func (h *stockHandler) GetIntradayPriceAction(symbol string) []IntradayPriceAction {
+func (h *stockHandler) GetIntradayPriceAction(symbol string) []raas.IntradayPriceAction {
 	url := fmt.Sprintf("%s%s%s", h.Config.Market.PSX.BaseURL, h.Config.Market.PSX.TimeseriesURL.Intraday, symbol)
-	var intradayPriceActions []IntradayPriceAction
+	var intradayPriceActions []raas.IntradayPriceAction
 	err := h.fetchAndParse(url, &intradayPriceActions)
 	if err != nil {
 		h.Logger.Error("Failed to fetch intraday price action", zap.String("symbol", symbol), zap.Error(err))
@@ -20,9 +21,9 @@ func (h *stockHandler) GetIntradayPriceAction(symbol string) []IntradayPriceActi
 	return intradayPriceActions
 }
 
-func (h *stockHandler) GetEodPriceAction(symbol string) []EodPriceAction {
+func (h *stockHandler) GetEodPriceAction(symbol string) []raas.EodPriceAction {
 	url := fmt.Sprintf("%s%s%s", h.Config.Market.PSX.BaseURL, h.Config.Market.PSX.TimeseriesURL.EOD, symbol)
-	var eodPriceActions []EodPriceAction
+	var eodPriceActions []raas.EodPriceAction
 	err := h.fetchAndParse(url, &eodPriceActions)
 	if err != nil {
 		h.Logger.Error("Failed to fetch EOD price action", zap.String("symbol", symbol), zap.Error(err))
@@ -83,9 +84,9 @@ func (h *stockHandler) parseResponse(body []byte, target interface{}) error {
 	}
 
 	switch target := target.(type) {
-	case *[]IntradayPriceAction:
+	case *[]raas.IntradayPriceAction:
 		*target = h.parseIntradayPriceActions(response.Data)
-	case *[]EodPriceAction:
+	case *[]raas.EodPriceAction:
 		*target = h.parseEodPriceActions(response.Data)
 	default:
 		return fmt.Errorf("unsupported target type")
@@ -95,10 +96,10 @@ func (h *stockHandler) parseResponse(body []byte, target interface{}) error {
 }
 
 // parseIntradayPriceActions converts raw response data into IntradayPriceAction slice.
-func (*stockHandler) parseIntradayPriceActions(data [][]float64) []IntradayPriceAction {
-	priceActions := make([]IntradayPriceAction, len(data))
+func (*stockHandler) parseIntradayPriceActions(data [][]float64) []raas.IntradayPriceAction {
+	priceActions := make([]raas.IntradayPriceAction, len(data))
 	for i, priceAction := range data {
-		priceActions[i] = IntradayPriceAction{
+		priceActions[i] = raas.IntradayPriceAction{
 			Time:   priceAction[0],
 			Price:  priceAction[1],
 			Volume: priceAction[2],
@@ -108,10 +109,10 @@ func (*stockHandler) parseIntradayPriceActions(data [][]float64) []IntradayPrice
 }
 
 // parseEodPriceActions converts raw response data into EodPriceAction slice.
-func (*stockHandler) parseEodPriceActions(data [][]float64) []EodPriceAction {
-	priceActions := make([]EodPriceAction, len(data))
+func (*stockHandler) parseEodPriceActions(data [][]float64) []raas.EodPriceAction {
+	priceActions := make([]raas.EodPriceAction, len(data))
 	for i, priceAction := range data {
-		priceActions[i] = EodPriceAction{
+		priceActions[i] = raas.EodPriceAction{
 			Time:   priceAction[0],
 			Close:  priceAction[1],
 			Volume: priceAction[2],
