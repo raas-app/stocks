@@ -1,6 +1,7 @@
 package stocks
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -10,7 +11,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func (h *stockHandler) GetIntradayPriceAction(symbol string) []raas.IntradayPriceAction {
+func (h *stockHandler) GetIntradayPriceAction(ctx context.Context, symbol string) []raas.IntradayPriceAction {
 	url := fmt.Sprintf("%s%s%s", h.Config.Market.PSX.BaseURL, h.Config.Market.PSX.TimeseriesURL.Intraday, symbol)
 	var intradayPriceActions []raas.IntradayPriceAction
 	err := h.fetchAndParse(url, &intradayPriceActions)
@@ -21,7 +22,7 @@ func (h *stockHandler) GetIntradayPriceAction(symbol string) []raas.IntradayPric
 	return intradayPriceActions
 }
 
-func (h *stockHandler) GetEodPriceAction(symbol string) []raas.EodPriceAction {
+func (h *stockHandler) GetEodPriceAction(ctx context.Context, symbol string) []raas.EodPriceAction {
 	url := fmt.Sprintf("%s%s%s", h.Config.Market.PSX.BaseURL, h.Config.Market.PSX.TimeseriesURL.EOD, symbol)
 	var eodPriceActions []raas.EodPriceAction
 	err := h.fetchAndParse(url, &eodPriceActions)
