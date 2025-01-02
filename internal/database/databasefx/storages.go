@@ -1,15 +1,15 @@
 package databasefx
 
 import (
-	raas "github.com/raas-app/stocks"
+	"github.com/raas-app/stocks/internal/database"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 )
 
-func ProvideDatabaseConnection(logger *zap.Logger, config *raas.Config) Connection {
-	return NewConnectionBuilder(logger, config)
+func ProvideStocksStorage(logger *zap.Logger, db database.Database) database.StockStore {
+	return database.NewStocksStorage(db.RW, logger)
 }
 
-var Providers = fx.Module("databases",
-	fx.Provide(ProvideDatabaseConnection),
-)
+var Providers = fx.Module("storages", fx.Provide(
+	ProvideStocksStorage,
+))

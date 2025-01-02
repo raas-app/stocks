@@ -5,6 +5,7 @@ import (
 	"os"
 	"time"
 
+	_ "github.com/go-sql-driver/mysql"
 	raas "github.com/raas-app/stocks"
 	"github.com/raas-app/stocks/internal/database/databasefx"
 	"github.com/raas-app/stocks/internal/fetcher/fetcherfx"
@@ -126,6 +127,7 @@ func main() {
 		databasefx.Providers,
 		usecasefx.Providers,
 		resthttp.Providers,
+		databasefx.Module,
 		resthttp.Launcher,
 		fx.StartTimeout(getStartTimeout()),
 		fx.StopTimeout(getStopTimeout()),
