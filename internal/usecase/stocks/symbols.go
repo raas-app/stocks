@@ -45,7 +45,7 @@ func ProvideStocksSymbolsUsecase(p SymbolsUsecaseParams) (SymbolsUsecase, error)
 }
 
 func (uc *symbolsUsecase) GetSymbols(ctx context.Context) ([]models.Stock, error) {
-	stocks, err := uc.StockStore.GetStocks(ctx)
+	stocks, err := uc.StockStore.FindAllSymbols(ctx)
 	if err != nil {
 		uc.logger.Error("failed to get stocks", zap.Error(err))
 		return nil, err

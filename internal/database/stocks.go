@@ -10,7 +10,7 @@ import (
 )
 
 type StockStore interface {
-	GetStocks(ctx context.Context) ([]models.Stock, error)
+	FindAllSymbols(ctx context.Context) ([]models.Stock, error)
 }
 
 type stocksStorage struct {
@@ -18,7 +18,7 @@ type stocksStorage struct {
 	logger *zap.Logger
 }
 
-func NewStocksStorage(db Common, logger *zap.Logger) *stocksStorage {
+func NewStocksStorage(db Common, logger *zap.Logger) StockStore {
 
 	return &stocksStorage{
 		db:     db,
@@ -26,7 +26,7 @@ func NewStocksStorage(db Common, logger *zap.Logger) *stocksStorage {
 	}
 }
 
-func (s *stocksStorage) GetStocks(ctx context.Context) ([]models.Stock, error) {
+func (s *stocksStorage) FindAllSymbols(ctx context.Context) ([]models.Stock, error) {
 	query := "SELECT `symbol` FROM `stock`"
 
 	rows, err := s.db.QueryContext(ctx, query)
